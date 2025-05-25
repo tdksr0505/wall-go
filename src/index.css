@@ -1,0 +1,15 @@
+@import 'tailwindcss';
+
+:root {
+  --red: #fd8888;
+  --blue: #7387fd;
+}
+
+body {
+  color: #383838;
+}
+
+@theme {
+  --color-blue: var(--blue);
+  --color-red: var(--red);
+}
