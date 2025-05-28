@@ -1,104 +1,20 @@
-import { useEffect, useRef, useState } from 'react'
-import { GamePhase, MAX_STONE_COUNT } from '@/constants'
-import type { Direction, Position, Territory } from '@/types'
 import Stone from '@/components/Stone'
 import Cell from '@/components/Cell'
 import PlaceWallOverlay from '@/components/PlaceWallOverlay'
-import { useDisclosure } from '@mantine/hooks'
 import { useGameStore } from '@/stores'
+import useGameController from '@/hooks/useGameController'
 
-type BoardProps = {
-  onGameOver: (territories: Territory[]) => void
-}
-export default function Board({ onGameOver }: BoardProps) {
-  const [highlightPositions, setHighlightPositions] = useState<Position[]>([])
-  const [selectedStonePosition, setSelectedStonePosition] = useState<Position | null>(null)
-  const [placeWallOverlayOpened, { open: openPlaceWallOverlay, close: closePlaceWallOverlay }] = useDisclosure(false)
-  const [placeableWallDirections, setPlaceableWallDirections] = useState<Direction[]>([])
+export default function Board() {
+  const board = useGameStore((s) => s.board)
+  const currentPlayer = useGameStore((s) => s.players[s.currentPlayerIndex])
+
   const {
-    board,
-    gamePhase,
-    stoneCount,
-    setGamePhase,
-    addStone,
-    switchPlayer,
-    getReachablePositions,
-    moveStone,
-    placeWall,
-    getPlaceableWallDirections,
-    getAllEnclosedTerritories,
-  } = useGameStore()
-  const currentPlayer = useGameStore((state) => state.players[state.currentPlayerIndex])
-
-  const handleCellClick = (position: Position) => {
-    const { x, y } = position
-    switch (gamePhase) {
-      case GamePhase.SetupStone:
-        const isSuccess = addStone({ x, y })
-        if (!isSuccess) {
-          alert('無法在此放置棋子')
-          return
-        }
-        switchPlayer()
-        break
-      case GamePhase.SelectStone:
-        const stone = board[y][x].stone
-        if (!stone || stone.player !== currentPlayer) {
-          alert('請選擇自己的棋子')
-          return
-        }
-        setSelectedStonePosition(position)
-        const reachablePosition = getReachablePositions(position)
-        if (reachablePosition.length === 1) {
-          alert('此棋子無法移動，請選擇其他棋子')
-          return
-        }
-        setHighlightPositions(reachablePosition)
-        setGamePhase(GamePhase.MoveStone)
-
-        break
-      case GamePhase.MoveStone:
-        if (!selectedStonePosition) return
-        const isValidMove = highlightPositions.some((el) => el.x === position.x && el.y === position.y)
-        if (!isValidMove) {
-          alert('無法移動此步')
-          return
-        }
-        moveStone(selectedStonePosition, position)
-        setSelectedStonePosition(position)
-        setPlaceableWallDirections(getPlaceableWallDirections(position))
-        setHighlightPositions([])
-        openPlaceWallOverlay()
-        setGamePhase(GamePhase.PlaceWall)
-        break
-      default:
-        break
-    }
-  }
-
-  const handlePlaceWallOverlayDirectionClick = (direction: Direction) => {
-    if (!selectedStonePosition) return
-    closePlaceWallOverlay()
-    placeWall(selectedStonePosition, direction)
-    const territories = getAllEnclosedTerritories()
-    console.log(`territories`, territories)
-    const isGameOver = territories.every((el) => el.owner !== null)
-    if (isGameOver) {
-      onGameOver(territories)
-      return
-    }
-    switchPlayer()
-    setSelectedStonePosition(null)
-    setHighlightPositions([])
-    setGamePhase(GamePhase.SelectStone)
-  }
-
-  useEffect(() => {
-    console.log(`check is setup stone finish`)
-    // check is setup stones finish
-    if (gamePhase !== GamePhase.SetupStone) return
-    if (stoneCount >= MAX_STONE_COUNT) setGamePhase(GamePhase.SelectStone)
-  }, [stoneCount])
+    handleCellClick,
+    handlePlaceWallOverlayDirectionClick,
+    placeWallOverlayOpened,
+    placeableWallDirections,
+    highlightPositions,
+  } = useGameController()
 
   return (
     <>

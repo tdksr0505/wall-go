@@ -17,6 +17,7 @@ type GameState = {
   currentPlayerIndex: number
   gamePhase: GamePhase
   stoneCount: number
+  territories: Territory[]
   initGame: () => void
   setGamePhase: (gamePhase: GamePhase) => void
   addStone: (position: { x: number; y: number }) => boolean
@@ -25,7 +26,7 @@ type GameState = {
   moveStone: (from: Position, to: Position) => void
   getPlaceableWallDirections: (position: Position) => Direction[]
   placeWall: (position: Position, direction: Direction) => void
-  getAllEnclosedTerritories: () => Territory[]
+  checkTerritories: () => void
   isGameOver: () => void
   restartGame: () => void
 }
@@ -37,6 +38,7 @@ export const useGameStore = create<GameState>()(
     currentPlayerIndex: 0,
     gamePhase: GamePhase.Start,
     stoneCount: INIT_STONES_CONFIG.length,
+    territories: [],
     initGame: () => {
       set((state) => {
         const board: Cell[][] = []
@@ -164,8 +166,9 @@ export const useGameStore = create<GameState>()(
         }
         state.board[position.y][position.x].walls[direction] = newWall
       })
+      get().checkTerritories()
     },
-    getAllEnclosedTerritories(): Territory[] {
+    checkTerritories(): void {
       const board = get().board
       const height = board.length
       const width = board[0].length
@@ -232,7 +235,9 @@ export const useGameStore = create<GameState>()(
         }
       }
 
-      return territories
+      set((state) => {
+        state.territories = territories
+      })
     },
     isGameOver: () => {
       return false

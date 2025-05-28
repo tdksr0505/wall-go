@@ -1,14 +1,15 @@
 import { Button, Overlay } from '@mantine/core'
-import type { Territory } from '@/types'
 import { useState } from 'react'
+import { useGameStore } from '@/stores'
 
 type StartOverlayProps = {
   onRestartClick: () => void
-  gameResult: Territory[]
 }
-export default function GameResultOverlay({ onRestartClick, gameResult }: StartOverlayProps) {
+export default function GameResultOverlay({ onRestartClick }: StartOverlayProps) {
+  const territories = useGameStore((s) => s.territories)
+
   const [opened, setOpened] = useState(true)
-  const territoryCounts = gameResult.reduce(
+  const territoryCounts = territories.reduce(
     (acc, area) => {
       if (area.owner === 'blue') {
         acc.blue += area.positions.length
