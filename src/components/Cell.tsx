@@ -15,16 +15,16 @@ const getWallColor = (player: Player) => {
   return player === Players.Blue ? 'var(--blue)' : 'var(--red)'
 }
 const wallDirections: Array<{ key: Direction; className: string }> = [
-  { key: 'top', className: 'rounded-full top-[-3px] left-[5px] w-[calc(100%_-_10px)] h-[5px]' },
-  { key: 'bottom', className: 'rounded-full bottom-[-3px] left-[5px] w-[calc(100%_-_10px)] h-[5px]' },
-  { key: 'left', className: 'rounded-full top-[5px] left-[-3px] w-[5px] h-[calc(100%_-_10px)]' },
-  { key: 'right', className: 'rounded-full top-[5px] right-[-3px] w-[5px] h-[calc(100%_-_10px)]' },
+  { key: 'top', className: 'rounded-full top-[-4px] left-[5px] w-[calc(100%_-_10px)] h-[5px]' },
+  { key: 'bottom', className: 'rounded-full bottom-[-4px] left-[5px] w-[calc(100%_-_10px)] h-[5px]' },
+  { key: 'left', className: 'rounded-full top-[5px] left-[-4px] w-[5px] h-[calc(100%_-_10px)]' },
+  { key: 'right', className: 'rounded-full top-[5px] right-[-4px] w-[5px] h-[calc(100%_-_10px)]' },
 ]
 export default function Cell({ children, cellData, currentPlayer, className, onCellClick, isHighlight }: CellProps) {
   return (
     <div
       className={cn(
-        'relative flex-1 aspect-square flex items-center justify-center cursor-pointer',
+        'relative w-full h-full flex items-center justify-center cursor-pointer rounded-md border border-[#c2c1c1]',
         {
           'bg-blue-100': isHighlight && currentPlayer === Players.Blue,
           'bg-red-100': isHighlight && currentPlayer === Players.Red,
@@ -35,10 +35,6 @@ export default function Cell({ children, cellData, currentPlayer, className, onC
         },
         className
       )}
-      style={{
-        borderTop: cellData.position.y === 0 ? '' : '1px solid #c2c1c1',
-        borderLeft: cellData.position.x === 0 ? '' : '1px solid #c2c1c1',
-      }}
       onClick={onCellClick}
     >
       {children}

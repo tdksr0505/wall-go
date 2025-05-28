@@ -181,7 +181,6 @@ export const useGameStore = create<GameState>()(
         const localVisited = new Set<string>()
         const positions: Position[] = []
         const touchingPlayers = new Set<Player>()
-        let isEnclosed = true
 
         while (queue.length > 0) {
           const pos = queue.pop()!
@@ -210,8 +209,6 @@ export const useGameStore = create<GameState>()(
 
         // 加入全局 visited
         localVisited.forEach((key) => visited.add(key))
-
-        if (!isEnclosed) return null
 
         let owner: Player | null = null
 

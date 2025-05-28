@@ -4,5 +4,5 @@ type StoneProps = {
   player: Player
 }
 export default function Stone({ player }: StoneProps) {
-  return <div className={`w-1/2 h-1/2  rounded-full shadow-lg ${player === Players.Blue ? 'bg-blue' : 'bg-red'}`} />
+  return <div className={`w-[60%] h-[60%]  rounded-full shadow-lg ${player === Players.Blue ? 'bg-blue' : 'bg-red'}`} />
 }
