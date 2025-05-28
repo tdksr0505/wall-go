@@ -38,8 +38,16 @@ export default function GameResultOverlay({ onRestartClick }: StartOverlayProps)
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <Button onClick={() => setOpened(false)}>關閉</Button>
-              <Button onClick={onRestartClick}>重新開始</Button>
+              <Button
+                variant="gradient"
+                gradient={{ from: 'gray', to: 'violet', deg: 139 }}
+                onClick={() => setOpened(false)}
+              >
+                關閉
+              </Button>
+              <Button variant="gradient" gradient={{ from: 'gray', to: 'violet', deg: 139 }} onClick={onRestartClick}>
+                重新開始
+              </Button>
             </div>
           </div>
         </div>
