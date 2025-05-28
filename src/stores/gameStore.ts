@@ -5,11 +5,18 @@ import type { Cell, Direction, Position, Stone, Territory, Wall } from '@/types'
 import { v4 as uuidv4 } from 'uuid'
 import { isValidPosition } from '@/utils'
 
+const INIT_STONES_CONFIG: Array<{ position: Position; stone: Stone }> = [
+  { position: { x: 1, y: 1 }, stone: { id: uuidv4(), player: Players.Red } },
+  { position: { x: BoardSize - 2, y: BoardSize - 2 }, stone: { id: uuidv4(), player: Players.Red } },
+  { position: { x: BoardSize - 2, y: 1 }, stone: { id: uuidv4(), player: Players.Blue } },
+  { position: { x: 1, y: BoardSize - 2 }, stone: { id: uuidv4(), player: Players.Blue } },
+]
 type GameState = {
   board: Cell[][]
   players: Player[]
   currentPlayerIndex: number
   gamePhase: GamePhase
+  stoneCount: number
   initGame: () => void
   setGamePhase: (gamePhase: GamePhase) => void
   addStone: (position: { x: number; y: number }) => boolean
@@ -29,15 +36,17 @@ export const useGameStore = create<GameState>()(
     players: [],
     currentPlayerIndex: 0,
     gamePhase: GamePhase.Start,
+    stoneCount: INIT_STONES_CONFIG.length,
     initGame: () => {
       set((state) => {
         const board: Cell[][] = []
         for (let i = 0; i < BoardSize; i++) {
           const row: Cell[] = []
           for (let j = 0; j < BoardSize; j++) {
+            const initStone = INIT_STONES_CONFIG.find((pos) => pos.position.x === j && pos.position.y === i)?.stone
             row.push({
               position: { x: j, y: i },
-              stone: null,
+              stone: initStone || null,
               walls: {
                 bottom: null,
                 right: null,
@@ -51,6 +60,7 @@ export const useGameStore = create<GameState>()(
         state.board = board
         state.players = [Players.Red, Players.Blue]
         state.currentPlayerIndex = 0
+        state.stoneCount = INIT_STONES_CONFIG.length
       })
     },
     setGamePhase: (gamePhase: GamePhase) => {
@@ -67,6 +77,7 @@ export const useGameStore = create<GameState>()(
         const currentPlayer = state.players[state.currentPlayerIndex]
         const newStone: Stone = { id: uuidv4(), player: currentPlayer }
         state.board[y][x].stone = newStone
+        state.stoneCount = state.stoneCount + 1
       })
       return true
     },
@@ -199,6 +210,11 @@ export const useGameStore = create<GameState>()(
         if (!isEnclosed) return null
 
         let owner: Player | null = null
+        console.log(`touchingPlayers`, touchingPlayers)
+
+        if (touchingPlayers.size === 0) {
+          return null
+        }
         if (touchingPlayers.size === 1) {
           owner = [...touchingPlayers][0]
         }

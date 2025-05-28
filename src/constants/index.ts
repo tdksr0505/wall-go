@@ -1,4 +1,5 @@
 export const BoardSize = 7
+export const MAX_STONE_COUNT = 8
 
 export const Players = {
   Red: 'red',

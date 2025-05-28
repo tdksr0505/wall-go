@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { GamePhase } from '@/constants'
+import { useEffect, useRef, useState } from 'react'
+import { GamePhase, MAX_STONE_COUNT } from '@/constants'
 import type { Direction, Position, Territory } from '@/types'
 import Stone from '@/components/Stone'
 import Cell from '@/components/Cell'
@@ -7,7 +7,6 @@ import PlaceWallOverlay from '@/components/PlaceWallOverlay'
 import { useDisclosure } from '@mantine/hooks'
 import { useGameStore } from '@/stores'
 
-const MAX_STONE_COUNT = 8
 type BoardProps = {
   onGameOver: (territories: Territory[]) => void
 }
@@ -16,10 +15,10 @@ export default function Board({ onGameOver }: BoardProps) {
   const [selectedStonePosition, setSelectedStonePosition] = useState<Position | null>(null)
   const [placeWallOverlayOpened, { open: openPlaceWallOverlay, close: closePlaceWallOverlay }] = useDisclosure(false)
   const [placeableWallDirections, setPlaceableWallDirections] = useState<Direction[]>([])
-  const stoneCount = useRef(0)
   const {
     board,
     gamePhase,
+    stoneCount,
     setGamePhase,
     addStone,
     switchPlayer,
@@ -40,11 +39,7 @@ export default function Board({ onGameOver }: BoardProps) {
           alert('無法在此放置棋子')
           return
         }
-        stoneCount.current += 1
         switchPlayer()
-        if (stoneCount.current === MAX_STONE_COUNT) {
-          setGamePhase(GamePhase.SelectStone)
-        }
         break
       case GamePhase.SelectStone:
         const stone = board[y][x].stone
@@ -86,17 +81,25 @@ export default function Board({ onGameOver }: BoardProps) {
     closePlaceWallOverlay()
     placeWall(selectedStonePosition, direction)
     const territories = getAllEnclosedTerritories()
+    console.log(`territories`, territories)
     const isGameOver = territories.every((el) => el.owner !== null)
     if (isGameOver) {
       onGameOver(territories)
       return
     }
-    console.log(`territories`, territories)
     switchPlayer()
     setSelectedStonePosition(null)
     setHighlightPositions([])
     setGamePhase(GamePhase.SelectStone)
   }
+
+  useEffect(() => {
+    console.log(`check is setup stone finish`)
+    // check is setup stones finish
+    if (gamePhase !== GamePhase.SetupStone) return
+    if (stoneCount >= MAX_STONE_COUNT) setGamePhase(GamePhase.SelectStone)
+  }, [stoneCount])
+
   return (
     <>
       <div className="w-full max-w-[700px] mx-auto bg-white rounded-2xl  shadow-[0_0_6px_#5b1e78,0_0_12px_#5b1e78,0_0_24px_#5b1e78]">
@@ -115,6 +118,7 @@ export default function Board({ onGameOver }: BoardProps) {
                     isHighlight={isHighlight}
                   >
                     {stone && <Stone player={stone.player} />}
+                    <div>{`${el.position.x}, ${el.position.y}`}</div>
                   </Cell>
                 )
               })}
