@@ -6,7 +6,6 @@ import Cell from '@/components/Cell'
 import PlaceWallOverlay from '@/components/PlaceWallOverlay'
 import { useDisclosure } from '@mantine/hooks'
 import { useGameStore } from '@/stores'
-import { Button } from '@mantine/core'
 
 const MAX_STONE_COUNT = 4
 type BoardProps = {
