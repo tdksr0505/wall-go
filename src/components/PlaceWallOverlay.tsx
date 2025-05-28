@@ -1,24 +1,27 @@
 import type { Direction } from '@/types'
-import { Button } from '@mantine/core'
+import type { JSX } from 'react'
+import { FaChevronUp, FaChevronDown, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+import GradientButton from './GradientButton'
 
 type PlaceWallButtonsProps = {
   onDirectionClick: (direction: Direction) => void
   placeableWallDirections: Direction[]
 }
 
+const ICON_SIZE = 30
 export default function PlaceWallButtons({ onDirectionClick, placeableWallDirections }: PlaceWallButtonsProps) {
   // 按鈕對應文字
-  const directionLabels: Record<Direction, string> = {
-    top: '上',
-    bottom: '下',
-    left: '左',
-    right: '右',
+  const directionIconConfig: Record<Direction, JSX.Element> = {
+    top: <FaChevronUp size={ICON_SIZE} />,
+    bottom: <FaChevronDown size={ICON_SIZE} />,
+    left: <FaChevronLeft size={ICON_SIZE} />,
+    right: <FaChevronRight size={ICON_SIZE} />,
   }
 
   return (
     <>
       {(['top', 'bottom', 'left', 'right'] as Direction[]).map((dir) => (
-        <Button
+        <GradientButton
           key={dir}
           style={{
             position: 'fixed',
@@ -32,8 +35,8 @@ export default function PlaceWallButtons({ onDirectionClick, placeableWallDirect
           onClick={() => onDirectionClick(dir)}
           disabled={!placeableWallDirections.includes(dir)}
         >
-          {directionLabels[dir]}
-        </Button>
+          {directionIconConfig[dir]}
+        </GradientButton>
       ))}
     </>
   )

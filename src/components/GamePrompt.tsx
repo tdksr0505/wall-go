@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import PlayerLabel from './PlayerLabel'
 import { useGameStore } from '@/stores'
 import { getTerritoryCounts } from '@/utils'
-import { Button } from '@mantine/core'
+import GradientButton from './GradientButton'
 
 export default function GamePrompt({ onRestartClick }: { onRestartClick: () => void }) {
   const currentPlayer = useGameStore((state) => state.players[state.currentPlayerIndex])
@@ -37,11 +37,7 @@ export default function GamePrompt({ onRestartClick }: { onRestartClick: () => v
           <span>{actionPrompt}</span>
         </div>
       )}
-      {gamePhase === GamePhase.GameOver && (
-        <Button variant="gradient" gradient={{ from: 'gray', to: 'violet', deg: 139 }} onClick={onRestartClick}>
-          重新開始
-        </Button>
-      )}
+      {gamePhase === GamePhase.GameOver && <GradientButton onClick={onRestartClick}>重新開始</GradientButton>}
       <div className="flex justify-center items-center gap-1 bg-white rounded-lg p-2 w-[60px]">
         <div className="w-[20px] h-[20px] rounded-full bg-blue"></div>
         <div>{territoryCounts.blue}</div>

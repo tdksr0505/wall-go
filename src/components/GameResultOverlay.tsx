@@ -1,7 +1,8 @@
-import { Button, Overlay } from '@mantine/core'
+import { Overlay } from '@mantine/core'
 import { useState } from 'react'
 import { useGameStore } from '@/stores'
 import { getTerritoryCounts } from '@/utils'
+import GradientButton from './GradientButton'
 
 type StartOverlayProps = {
   onRestartClick: () => void
@@ -38,16 +39,8 @@ export default function GameResultOverlay({ onRestartClick }: StartOverlayProps)
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <Button
-                variant="gradient"
-                gradient={{ from: 'gray', to: 'violet', deg: 139 }}
-                onClick={() => setOpened(false)}
-              >
-                關閉
-              </Button>
-              <Button variant="gradient" gradient={{ from: 'gray', to: 'violet', deg: 139 }} onClick={onRestartClick}>
-                重新開始
-              </Button>
+              <GradientButton onClick={() => setOpened(false)}>關閉</GradientButton>
+              <GradientButton onClick={onRestartClick}>重新開始</GradientButton>
             </div>
           </div>
         </div>
