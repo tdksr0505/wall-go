@@ -63,6 +63,7 @@ export const useGameStore = create<GameState>()(
         state.players = [Players.Red, Players.Blue]
         state.currentPlayerIndex = 0
         state.stoneCount = INIT_STONES_CONFIG.length
+        state.territories = []
       })
     },
     setGamePhase: (gamePhase: GamePhase) => {
@@ -213,7 +214,6 @@ export const useGameStore = create<GameState>()(
         if (!isEnclosed) return null
 
         let owner: Player | null = null
-        console.log(`touchingPlayers`, touchingPlayers)
 
         if (touchingPlayers.size === 0) {
           return null

@@ -106,7 +106,6 @@ export default function useGameController() {
   }, [stoneCount])
 
   useEffect(() => {
-    console.log(`territories`, territories)
     if (territories.length === 0) return
     const isGameOver = territories.every((el) => el.owner !== null)
     if (isGameOver) {

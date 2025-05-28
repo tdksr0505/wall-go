@@ -34,7 +34,6 @@ export default function Board() {
                     isHighlight={isHighlight}
                   >
                     {stone && <Stone player={stone.player} />}
-                    <div>{`${el.position.x}, ${el.position.y}`}</div>
                   </Cell>
                 )
               })}
