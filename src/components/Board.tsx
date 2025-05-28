@@ -3,18 +3,48 @@ import Cell from '@/components/Cell'
 import PlaceWallOverlay from '@/components/PlaceWallOverlay'
 import { useGameStore } from '@/stores'
 import useGameController from '@/hooks/useGameController'
+import { useMemo } from 'react'
+import type { Position } from '@/types'
 
 export default function Board() {
   const board = useGameStore((s) => s.board)
-  const currentPlayer = useGameStore((s) => s.players[s.currentPlayerIndex])
+  const territories = useGameStore((s) => s.territories)
 
   const {
     handleCellClick,
     handlePlaceWallOverlayDirectionClick,
     placeWallOverlayOpened,
     placeableWallDirections,
-    highlightPositions,
+    reachablePositions,
   } = useGameController()
+
+  const { redTerritories, blueTerritories } = useMemo(() => {
+    const result: { redTerritories: Position[]; blueTerritories: Position[] } = {
+      redTerritories: [],
+      blueTerritories: [],
+    }
+    territories.forEach((el) => {
+      if (el.owner === 'red') {
+        result.redTerritories.push(...el.positions)
+      } else if (el.owner === 'blue') {
+        result.blueTerritories.push(...el.positions)
+      }
+    })
+    return result
+  }, [territories])
+
+  const getHighlightColor = (target: Position) => {
+    let highlightColor = reachablePositions.some((pos) => pos.x === target.x && pos.y === target.y)
+      ? 'var(--cell-highlight-yellow)'
+      : undefined
+    highlightColor = redTerritories.some((pos) => pos.x === target.x && pos.y === target.y)
+      ? 'var(--cell-highlight-red)'
+      : highlightColor
+    highlightColor = blueTerritories.some((pos) => pos.x === target.x && pos.y === target.y)
+      ? 'var(--cell-highlight-blue)'
+      : highlightColor
+    return highlightColor
+  }
 
   return (
     <>
@@ -24,19 +54,16 @@ export default function Board() {
             <div key={index} className="flex w-full justify-center">
               {row.map((el) => {
                 const stone = el.stone
-                const isHighlight = highlightPositions.some((pos) => pos.x === el.position.x && pos.y === el.position.y)
+                const highlightColor = getHighlightColor(el.position)
                 return (
-                  <div className="p-[1px] flex-1 aspect-square">
-                    <Cell
-                      cellData={el}
-                      key={`${el.position.x}-${el.position.y}`}
-                      currentPlayer={currentPlayer}
-                      onCellClick={() => handleCellClick(el.position)}
-                      isHighlight={isHighlight}
-                    >
-                      {stone && <Stone player={stone.player} />}
-                    </Cell>
-                  </div>
+                  <Cell
+                    cellData={el}
+                    key={`${el.position.x}-${el.position.y}`}
+                    onCellClick={() => handleCellClick(el.position)}
+                    highlightColor={highlightColor}
+                  >
+                    {stone && <Stone player={stone.player} />}
+                  </Cell>
                 )
               })}
             </div>

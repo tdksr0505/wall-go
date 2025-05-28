@@ -3,6 +3,9 @@
 :root {
   --red: #fd8888;
   --blue: #7387fd;
+  --cell-highlight-red: #fee2e2;
+  --cell-highlight-blue: #dbeafe;
+  --cell-highlight-yellow: #ffffc0;
 }
 
 body {

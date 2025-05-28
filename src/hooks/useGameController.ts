@@ -20,7 +20,7 @@ export default function useGameController() {
   } = useGameStore()
   const currentPlayer = useGameStore((state) => state.players[state.currentPlayerIndex])
 
-  const [highlightPositions, setHighlightPositions] = useState<Position[]>([])
+  const [reachablePositions, setReachablePositions] = useState<Position[]>([])
   const [selectedStonePosition, setSelectedStonePosition] = useState<Position | null>(null)
   const [placeWallOverlayOpened, { open: openPlaceWallOverlay, close: closePlaceWallOverlay }] = useDisclosure(false)
   const [placeableWallDirections, setPlaceableWallDirections] = useState<Direction[]>([])
@@ -43,12 +43,12 @@ export default function useGameController() {
       return
     }
     setSelectedStonePosition(position)
-    const reachablePosition = getReachablePositions(position)
-    if (reachablePosition.length === 1) {
+    const reachablePositions = getReachablePositions(position)
+    if (reachablePositions.length === 1) {
       alert('此棋子無法移動，請選擇其他棋子')
       return
     }
-    setHighlightPositions(reachablePosition)
+    setReachablePositions(reachablePositions)
     setGamePhase(GamePhase.MoveStone)
   }
 
@@ -60,7 +60,7 @@ export default function useGameController() {
       handleSelectStone(position)
       return
     }
-    const isValidMove = highlightPositions.some((el) => el.x === position.x && el.y === position.y)
+    const isValidMove = reachablePositions.some((el) => el.x === position.x && el.y === position.y)
     if (!isValidMove) {
       alert('無法移動此步')
       return
@@ -68,7 +68,6 @@ export default function useGameController() {
     moveStone(selectedStonePosition, position)
     setSelectedStonePosition(position)
     setPlaceableWallDirections(getPlaceableWallDirections(position))
-    setHighlightPositions([])
     openPlaceWallOverlay()
     setGamePhase(GamePhase.PlaceWall)
   }
@@ -79,7 +78,6 @@ export default function useGameController() {
     placeWall(selectedStonePosition, direction)
     switchPlayer()
     setSelectedStonePosition(null)
-    setHighlightPositions([])
     setGamePhase(GamePhase.SelectStone)
   }
 
@@ -118,6 +116,6 @@ export default function useGameController() {
     handlePlaceWallOverlayDirectionClick,
     placeWallOverlayOpened,
     placeableWallDirections,
-    highlightPositions,
+    reachablePositions: gamePhase === GamePhase.MoveStone ? reachablePositions : [],
   }
 }
