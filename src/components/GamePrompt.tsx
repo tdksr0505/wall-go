@@ -18,10 +18,10 @@ export default function GamePrompt() {
         return '放置牆壁'
     }
   }, [gamePhase])
-  if (gamePhase === GamePhase.Start) return
+  if (gamePhase === GamePhase.Start || gamePhase === GamePhase.GameOver) return
   return (
     <>
-      <div className="text-[20px]">
+      <div className="text-[20px] text-white">
         <span>請</span>
         <PlayerLabel player={currentPlayer} />
         <span>{actionPrompt}</span>

@@ -26,8 +26,8 @@ function App() {
 
   return (
     <>
-      <div className="w-dvw p-2 flex flex-col gap-2">
-        <div className="flex items-center gap-3 justify-center">
+      <div className="w-dvw h-dvh p-2 flex flex-col gap-2">
+        <div className="flex items-center gap-3 justify-center h-[50px]">
           <GamePrompt />
         </div>
         <div>

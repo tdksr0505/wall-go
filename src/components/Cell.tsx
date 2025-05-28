@@ -1,5 +1,5 @@
 import { Players, type Player } from '@/constants'
-import { type Cell } from '@/types'
+import { type Cell, type Direction } from '@/types'
 import { cn } from '@/utils'
 
 type CellProps = {
@@ -14,11 +14,17 @@ type CellProps = {
 const getWallColor = (player: Player) => {
   return player === Players.Blue ? 'var(--blue)' : 'var(--red)'
 }
+const wallDirections: Array<{ key: Direction; className: string }> = [
+  { key: 'top', className: 'rounded-full top-[-3px] left-[5px] w-[calc(100%_-_10px)] h-[5px]' },
+  { key: 'bottom', className: 'rounded-full bottom-[-3px] left-[5px] w-[calc(100%_-_10px)] h-[5px]' },
+  { key: 'left', className: 'rounded-full top-[5px] left-[-3px] w-[5px] h-[calc(100%_-_10px)]' },
+  { key: 'right', className: 'rounded-full top-[5px] right-[-3px] w-[5px] h-[calc(100%_-_10px)]' },
+]
 export default function Cell({ children, cellData, currentPlayer, className, onCellClick, isHighlight }: CellProps) {
   return (
     <div
       className={cn(
-        'relative flex-1 aspect-square max-w-[100px] flex items-center justify-center cursor-pointer',
+        'relative flex-1 aspect-square flex items-center justify-center cursor-pointer',
         {
           'bg-blue-100': isHighlight && currentPlayer === Players.Blue,
           'bg-red-100': isHighlight && currentPlayer === Players.Red,
@@ -30,38 +36,20 @@ export default function Cell({ children, cellData, currentPlayer, className, onC
         className
       )}
       style={{
-        borderBottom: `1px solid #aaa`,
-        borderRight: `1px solid #aaa`,
-        borderTop: cellData.position.y === 0 ? `1px solid #aaa` : '',
-        borderLeft: cellData.position.x === 0 ? `1px solid #aaa` : '',
+        borderTop: cellData.position.y === 0 ? '' : '1px solid #c2c1c1',
+        borderLeft: cellData.position.x === 0 ? '' : '1px solid #c2c1c1',
       }}
       onClick={onCellClick}
     >
       {children}
-      {cellData.walls.top && (
-        <div
-          className="absolute top-[-2px] left-0 w-full h-[3px] bg-blue"
-          style={{ background: getWallColor(cellData.walls.top.placedBy) }}
-        />
-      )}
-      {cellData.walls.bottom && (
-        <div
-          className="absolute bottom-[-2px] left-0 w-full h-[3px] bg-blue"
-          style={{ background: getWallColor(cellData.walls.bottom.placedBy) }}
-        />
-      )}
-      {cellData.walls.left && (
-        <div
-          className="absolute top-0 left-[-2px] w-[3px] h-full bg-blue"
-          style={{ background: getWallColor(cellData.walls.left.placedBy) }}
-        />
-      )}
-      {cellData.walls.right && (
-        <div
-          className="absolute top-0 right-[-2px] w-[3px] h-full bg-blue"
-          style={{ background: getWallColor(cellData.walls.right.placedBy) }}
-        />
-      )}
+      {wallDirections.map(({ key, className }) => {
+        const wall = cellData.walls[key]
+        if (!wall) return null
+
+        return (
+          <div key={key} className={`z-1 absolute ${className}`} style={{ background: getWallColor(wall.placedBy) }} />
+        )
+      })}
     </div>
   )
 }

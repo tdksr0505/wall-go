@@ -101,28 +101,29 @@ export default function Board({ onGameOver, onRestart }: BoardProps) {
   }
   return (
     <>
-      {board.map((row, index) => {
-        return (
-          <div key={index} className="flex w-full justify-center">
-            {row.map((el) => {
-              const stone = el.stone
-              const isHighlight = highlightPositions.some((pos) => pos.x === el.position.x && pos.y === el.position.y)
-              return (
-                <Cell
-                  cellData={el}
-                  key={`${el.position.x}-${el.position.y}`}
-                  currentPlayer={currentPlayer}
-                  onCellClick={() => handleCellClick(el.position)}
-                  isHighlight={isHighlight}
-                >
-                  {stone && <Stone player={stone.player} />}
-                  <div>{`${el.position.x},${el.position.y}`}</div>
-                </Cell>
-              )
-            })}
-          </div>
-        )
-      })}
+      <div className="w-full max-w-[700px] mx-auto bg-white rounded-2xl  shadow-[0_0_6px_#5b1e78,0_0_12px_#5b1e78,0_0_24px_#5b1e78]">
+        {board.map((row, index) => {
+          return (
+            <div key={index} className="flex w-full justify-center">
+              {row.map((el) => {
+                const stone = el.stone
+                const isHighlight = highlightPositions.some((pos) => pos.x === el.position.x && pos.y === el.position.y)
+                return (
+                  <Cell
+                    cellData={el}
+                    key={`${el.position.x}-${el.position.y}`}
+                    currentPlayer={currentPlayer}
+                    onCellClick={() => handleCellClick(el.position)}
+                    isHighlight={isHighlight}
+                  >
+                    {stone && <Stone player={stone.player} />}
+                  </Cell>
+                )
+              })}
+            </div>
+          )
+        })}
+      </div>
       <div className="flex justify-center p-2">
         {gamePhase === GamePhase.PlaceWall && <Button onClick={openPlaceWallModal}>放置牆壁</Button>}
         {gamePhase === GamePhase.GameOver && <Button onClick={onRestart}>重新開始</Button>}
