@@ -25,7 +25,7 @@ export default function GamePrompt({ onRestartClick }: { onRestartClick: () => v
   const territoryCounts = getTerritoryCounts(territories)
   if (gamePhase === GamePhase.Start) return
   return (
-    <div className="flex justify-center items-center gap-10">
+    <div className="flex justify-center items-center gap-5">
       <div className="flex justify-center items-center gap-1 bg-white rounded-lg p-2 w-[60px]">
         <div className="w-[20px] h-[20px] rounded-full bg-red"></div>
         <div>{territoryCounts.red}</div>
@@ -37,7 +37,11 @@ export default function GamePrompt({ onRestartClick }: { onRestartClick: () => v
           <span>{actionPrompt}</span>
         </div>
       )}
-      {gamePhase === GamePhase.GameOver && <Button onClick={onRestartClick}>重新開始</Button>}
+      {gamePhase === GamePhase.GameOver && (
+        <Button variant="gradient" gradient={{ from: 'gray', to: 'violet', deg: 139 }} onClick={onRestartClick}>
+          重新開始
+        </Button>
+      )}
       <div className="flex justify-center items-center gap-1 bg-white rounded-lg p-2 w-[60px]">
         <div className="w-[20px] h-[20px] rounded-full bg-blue"></div>
         <div>{territoryCounts.blue}</div>
