@@ -7,7 +7,7 @@ import PlaceWallOverlay from '@/components/PlaceWallOverlay'
 import { useDisclosure } from '@mantine/hooks'
 import { useGameStore } from '@/stores'
 
-const MAX_STONE_COUNT = 4
+const MAX_STONE_COUNT = 8
 type BoardProps = {
   onGameOver: (territories: Territory[]) => void
 }
