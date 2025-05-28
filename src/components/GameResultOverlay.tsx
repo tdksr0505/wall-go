@@ -14,7 +14,7 @@ export default function GameResultOverlay({ onRestartClick }: StartOverlayProps)
 
   const getTitleConfig = () => {
     if (territoryCounts.blue === territoryCounts.red) return { text: 'DRAW!', color: undefined }
-    if (territoryCounts.blue > territoryCounts.red) return { text: 'RED WIN!', color: 'var(--blue)' }
+    if (territoryCounts.blue > territoryCounts.red) return { text: 'BLUE WIN!', color: 'var(--blue)' }
     return { text: 'RED WIN!', color: 'var(--red)' }
   }
   const titleConfig = getTitleConfig()
