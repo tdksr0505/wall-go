@@ -3,20 +3,19 @@ import { GamePhase } from '@/constants'
 import type { Direction, Position, Territory } from '@/types'
 import Stone from '@/components/Stone'
 import Cell from '@/components/Cell'
+import PlaceWallOverlay from '@/components/PlaceWallOverlay'
 import { useDisclosure } from '@mantine/hooks'
-import PlaceWallModal from '@/components/PlaceWallModal'
 import { useGameStore } from '@/stores'
 import { Button } from '@mantine/core'
 
 const MAX_STONE_COUNT = 4
 type BoardProps = {
   onGameOver: (territories: Territory[]) => void
-  onRestart: () => void
 }
-export default function Board({ onGameOver, onRestart }: BoardProps) {
+export default function Board({ onGameOver }: BoardProps) {
   const [highlightPositions, setHighlightPositions] = useState<Position[]>([])
   const [selectedStonePosition, setSelectedStonePosition] = useState<Position | null>(null)
-  const [placeWallOpened, { open: openPlaceWallModal, close: closePlaceWallModal }] = useDisclosure(false)
+  const [placeWallOverlayOpened, { open: openPlaceWallOverlay, close: closePlaceWallOverlay }] = useDisclosure(false)
   const [placeableWallDirections, setPlaceableWallDirections] = useState<Direction[]>([])
   const stoneCount = useRef(0)
   const {
@@ -75,7 +74,7 @@ export default function Board({ onGameOver, onRestart }: BoardProps) {
         setSelectedStonePosition(position)
         setPlaceableWallDirections(getPlaceableWallDirections(position))
         setHighlightPositions([])
-        openPlaceWallModal()
+        openPlaceWallOverlay()
         setGamePhase(GamePhase.PlaceWall)
         break
       default:
@@ -83,9 +82,9 @@ export default function Board({ onGameOver, onRestart }: BoardProps) {
     }
   }
 
-  const handlePlaceWallModalDirectionClick = (direction: Direction) => {
+  const handlePlaceWallOverlayDirectionClick = (direction: Direction) => {
     if (!selectedStonePosition) return
-    closePlaceWallModal()
+    closePlaceWallOverlay()
     placeWall(selectedStonePosition, direction)
     const territories = getAllEnclosedTerritories()
     const isGameOver = territories.every((el) => el.owner !== null)
@@ -124,17 +123,13 @@ export default function Board({ onGameOver, onRestart }: BoardProps) {
           )
         })}
       </div>
-      <div className="flex justify-center p-2">
-        {gamePhase === GamePhase.PlaceWall && <Button onClick={openPlaceWallModal}>放置牆壁</Button>}
-        {gamePhase === GamePhase.GameOver && <Button onClick={onRestart}>重新開始</Button>}
-      </div>
-      <PlaceWallModal
-        opened={placeWallOpened}
-        onClose={closePlaceWallModal}
-        onDirectionClick={handlePlaceWallModalDirectionClick}
-        currentPlayer={currentPlayer}
-        placeableWallDirections={placeableWallDirections}
-      />
+
+      {placeWallOverlayOpened && (
+        <PlaceWallOverlay
+          onDirectionClick={handlePlaceWallOverlayDirectionClick}
+          placeableWallDirections={placeableWallDirections}
+        />
+      )}
     </>
   )
 }

@@ -6,6 +6,7 @@ import GamePrompt from '@/components/GamePrompt'
 import { useGameStore } from '@/stores'
 import GameResultOverlay from '@/components/GameResultOverlay'
 import Board from './components/Board'
+import { Button } from '@mantine/core'
 
 function App() {
   const { gamePhase, setGamePhase, initGame, restartGame } = useGameStore()
@@ -26,20 +27,18 @@ function App() {
 
   return (
     <>
-      <div className="w-dvw h-dvh p-2 flex flex-col gap-2">
+      <div className="w-dvw h-dvh p-2 flex flex-col gap-2  justify-center items-center">
         <div className="flex items-center gap-3 justify-center h-[50px]">
           <GamePrompt />
+          {gamePhase === GamePhase.GameOver && <Button onClick={handleRestartClick}>重新開始</Button>}
         </div>
-        <div>
-          <Board
-            key={boardKey}
-            onRestart={handleRestartClick}
-            onGameOver={(territories) => {
-              setGameResult(territories)
-              setGamePhase(GamePhase.GameOver)
-            }}
-          />
-        </div>
+        <Board
+          key={boardKey}
+          onGameOver={(territories) => {
+            setGameResult(territories)
+            setGamePhase(GamePhase.GameOver)
+          }}
+        />
       </div>
       {gamePhase === GamePhase.Start && <StartOverlay onStartClick={handleStartClick} />}
       {gamePhase === GamePhase.GameOver && (
