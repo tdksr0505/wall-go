@@ -1,4 +1,4 @@
-import { GamePhase, MAX_STONE_COUNT } from '@/constants'
+import { GamePhase, MAX_STONE_COUNT, SETUP_STONE_ORDER } from '@/constants'
 import type { Direction, Position } from '@/types'
 import { useGameStore } from '@/stores'
 import { useEffect, useState } from 'react'
@@ -27,12 +27,15 @@ export default function useGameController() {
 
   const handleSetupStone = (position: Position) => {
     const { x, y } = position
-    const isSuccess = addStone({ x, y })
+    const { isSuccess, stoneCount } = addStone({ x, y })
     if (!isSuccess) {
       alert('無法在此放置棋子')
       return
     }
-    switchPlayer()
+
+    const nextPlayerIndex = stoneCount % SETUP_STONE_ORDER.length
+    const nextPlayer = SETUP_STONE_ORDER[nextPlayerIndex]
+    if (nextPlayer !== currentPlayer) switchPlayer()
   }
 
   const handleSelectStone = (position: Position) => {

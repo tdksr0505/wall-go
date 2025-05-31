@@ -20,7 +20,7 @@ type GameState = {
   territories: Territory[]
   initGame: () => void
   setGamePhase: (gamePhase: GamePhase) => void
-  addStone: (position: { x: number; y: number }) => boolean
+  addStone: (position: { x: number; y: number }) => { isSuccess: boolean; stoneCount: number }
   switchPlayer: () => void
   getReachablePositions: (start: Position) => Position[]
   moveStone: (from: Position, to: Position) => void
@@ -72,17 +72,19 @@ export const useGameStore = create<GameState>()(
       })
     },
     addStone({ x, y }: Position) {
+      let stoneCount = get().stoneCount
       const isStoneExist = Boolean(get().board[y][x].stone)
       if (isStoneExist) {
-        return false
+        return { isSuccess: false, stoneCount }
       }
       set((state) => {
         const currentPlayer = state.players[state.currentPlayerIndex]
         const newStone: Stone = { id: uuidv4(), player: currentPlayer }
         state.board[y][x].stone = newStone
         state.stoneCount = state.stoneCount + 1
+        stoneCount = state.stoneCount
       })
-      return true
+      return { isSuccess: true, stoneCount }
     },
     switchPlayer() {
       set((state) => {

@@ -28,3 +28,5 @@ export const MoveDirections = [
   { x: 0, y: -1, from: 'top', to: 'bottom' },
   { x: -1, y: 0, from: 'left', to: 'right' },
 ] as const
+
+export const SETUP_STONE_ORDER: Player[] = [Players.Red, Players.Blue, Players.Blue, Players.Red]
