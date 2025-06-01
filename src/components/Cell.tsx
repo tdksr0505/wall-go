@@ -15,10 +15,10 @@ const getWallColor = (player: Player) => {
   return player === Players.Blue ? 'var(--blue)' : 'var(--red)'
 }
 const wallDirections: Array<{ key: Direction; className: string }> = [
-  { key: 'top', className: 'rounded-full top-[-4px] left-[5px] w-[calc(100%_-_10px)] h-[5px]' },
-  { key: 'bottom', className: 'rounded-full bottom-[-4px] left-[5px] w-[calc(100%_-_10px)] h-[5px]' },
-  { key: 'left', className: 'rounded-full top-[5px] left-[-4px] w-[5px] h-[calc(100%_-_10px)]' },
-  { key: 'right', className: 'rounded-full top-[5px] right-[-4px] w-[5px] h-[calc(100%_-_10px)]' },
+  { key: 'top', className: 'rounded-full top-[-5px] left-[5px] w-[calc(100%_-_10px)] h-[6px]' },
+  { key: 'bottom', className: 'rounded-full bottom-[-5px] left-[5px] w-[calc(100%_-_10px)] h-[6px]' },
+  { key: 'left', className: 'rounded-full top-[5px] left-[-5px] w-[6px] h-[calc(100%_-_10px)]' },
+  { key: 'right', className: 'rounded-full top-[5px] right-[-5px] w-[6px] h-[calc(100%_-_10px)]' },
 ]
 export default function Cell({ children, cellData, className, onCellClick, highlightColor }: CellProps) {
   return (
